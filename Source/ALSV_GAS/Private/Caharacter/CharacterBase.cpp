@@ -27,6 +27,33 @@ void ACharacterBase::BeginPlay()
 	{
 		// instruct the Ability System Component to instantiate the Attribute Set, which will then register it automatically
 		BaseAttributeSet = AbilitySystemComponent->GetSet<UBaseAttributeSet>();
+		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetHealthAttribute()).AddUObject(this, &ACharacterBase::HealthChanged);
+		HealthMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetHealthMaxAttribute()).AddUObject(this, &ACharacterBase::HealthMaxChanged);
+
+		if (auto const controller = Cast<APlayerController>(GetController()))
+		{
+			MainAttributesWidget = CreateWidget<UMainAttributesWidget>(controller, MainAttributesWidgetClass);
+			MainAttributesWidget->AddToViewport();
+			MainAttributesWidget->OnHealthMaxChanged(BaseAttributeSet->GetHealthMax());
+			MainAttributesWidget->OnHealthChanged(BaseAttributeSet->GetHealth());
+		}
+
+	}
+}
+
+void ACharacterBase::HealthChanged(const FOnAttributeChangeData& Data)
+{
+	if (MainAttributesWidget)
+	{
+		MainAttributesWidget->OnHealthChanged(Data.NewValue);
+	}
+}
+
+void ACharacterBase::HealthMaxChanged(const FOnAttributeChangeData& Data)
+{
+	if (MainAttributesWidget)
+	{
+		MainAttributesWidget->OnHealthMaxChanged(Data.NewValue);
 	}
 }
 

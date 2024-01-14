@@ -31,8 +31,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Health)
-
-	/** Sample "Health" Attribute, publicly accessible */
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayAttributeData HealthMax;
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, HealthMax)
