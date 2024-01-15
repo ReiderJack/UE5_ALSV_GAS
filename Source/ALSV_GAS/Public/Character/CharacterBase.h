@@ -7,6 +7,7 @@
 #include "AbilitySystemInterface.h"
 #include "Abilities/Attributes/BaseAttributeSet.h"
 #include "UI/MainAttributesWidget.h"
+#include "Abilities/Data/AbilitySet.h"
 #include "CharacterBase.generated.h"
 
 
@@ -26,9 +27,23 @@ public:
 	UPROPERTY()
 	const UBaseAttributeSet* BaseAttributeSet;
 
+	
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 protected:
 	
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, Category="Abilities")
+	UAbilitySet* InitialAbilitySet { nullptr };
+	
+	UPROPERTY(EditDefaultsOnly, Category="Input|Binding")
+	FAbilityInputBindings AbilityInputBindings;
+	
+	// Begin Input Bindings
+	void AbilityInputBindingPressedHandler(EAbilityInput abilityInput);
+	void AbilityInputBindingReleasedHandler(EAbilityInput abilityInput);
 	
 	// Widget related
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")
@@ -46,4 +61,8 @@ protected:
 
 	FDelegateHandle HealthMaxChangedDelegateHandle;
 	void HealthMaxChanged(const FOnAttributeChangeData & Data);
+
+private:
+	UPROPERTY(Transient)
+	TArray<FGameplayAbilitySpecHandle> InitiallyGrantedAbilitySpecHandles;
 };
