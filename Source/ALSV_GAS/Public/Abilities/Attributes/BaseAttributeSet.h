@@ -35,4 +35,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FGameplayAttributeData HealthMax;
 	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, HealthMax)
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FGameplayAttributeData Damage;
+	ATTRIBUTE_ACCESSORS(UBaseAttributeSet, Damage)
 };
