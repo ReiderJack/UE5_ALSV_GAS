@@ -1,7 +1,7 @@
 
 
 
-#include "Caharacter/CharacterBase.h"
+#include "Character/CharacterBase.h"
 
 UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
 {
