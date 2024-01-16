@@ -3,6 +3,7 @@
 
 #include "Character/CharacterBase.h"
 
+
 UAbilitySystemComponent* ACharacterBase::GetAbilitySystemComponent() const
 {
 		return AbilitySystemComponent;
@@ -16,35 +17,26 @@ ACharacterBase::ACharacterBase()
 
 	// Create ability system component, and set it to be explicitly replicated
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+
+	AbilitiesInputComponent = CreateDefaultSubobject<UAbilitiesInputComponent>(TEXT("AbilitiesInputComponent"));
 }
 
 void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
-	if(UEnhancedInputComponent* playerEnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+
+	if(AbilitiesInputComponent)
 	{
-		for(const FAbilityInputToInputActionBinding& binding : AbilityInputBindings.Bindings)
-		{
-			playerEnhancedInputComponent->BindAction(binding.InputAction, ETriggerEvent::Triggered, this, &ThisClass::AbilityInputBindingPressedHandler, binding.AbilityInput);
-			playerEnhancedInputComponent->BindAction(binding.InputAction, ETriggerEvent::Completed, this, &ThisClass::AbilityInputBindingReleasedHandler, binding.AbilityInput);
-		}
+		AbilitiesInputComponent->SetupPlayerInputComponent(PlayerInputComponent);
 	}
+	
 }
 
 // Called when the game starts or when spawned
 void ACharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 	
-	
-	if(IsValid(InitialAbilitySet))
-	{
-		InitiallyGrantedAbilitySpecHandles.Append(InitialAbilitySet->GrantAbilitiesToAbilitySystem(AbilitySystemComponent));
-	}
-
-
 	if (AbilitySystemComponent)
 	{
 		// instruct the Ability System Component to instantiate the Attribute Set, which will then register it automatically
@@ -61,16 +53,6 @@ void ACharacterBase::BeginPlay()
 		}
 
 	}
-}
-
-void ACharacterBase::AbilityInputBindingPressedHandler(EAbilityInput abilityInput)
-{
-	AbilitySystemComponent->AbilityLocalInputPressed(static_cast<uint8>(abilityInput));
-}
-
-void ACharacterBase::AbilityInputBindingReleasedHandler(EAbilityInput abilityInput)
-{
-	AbilitySystemComponent->AbilityLocalInputReleased(static_cast<uint8>(abilityInput));
 }
 
 void ACharacterBase::HealthChanged(const FOnAttributeChangeData& Data)

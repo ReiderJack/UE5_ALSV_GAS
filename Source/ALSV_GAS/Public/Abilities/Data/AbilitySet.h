@@ -29,18 +29,6 @@ struct FAbilityInputToInputActionBinding
 	EAbilityInput AbilityInput;
 };
 
-// The bridge between enhanced input system
-// and gameplay ability input
-USTRUCT()
-struct FAbilityInputBindings
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditDefaultsOnly, Category="Input")
-	TArray<FAbilityInputToInputActionBinding> Bindings;
-	
-};
-
 USTRUCT()
 struct FAbilitySetItem
 {
