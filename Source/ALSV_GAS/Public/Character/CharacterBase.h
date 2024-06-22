@@ -32,21 +32,11 @@ public:
 protected:
 	
 	virtual void BeginPlay() override;
+	virtual void PossessedBy(AController* NewController) override;
 
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Abilities|Input")
-	UAbilitiesInputComponent* AbilitiesInputComponent;
-	
-	// Widget related
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")
-	TSubclassOf<UMainAttributesWidget> MainAttributesWidgetClass;
-	
-	UPROPERTY(BlueprintReadWrite, Category = "UI")
-	UMainAttributesWidget* MainAttributesWidget;
-
-	// Ability system
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
-	UAbilitySystemComponent* AbilitySystemComponent;
-
+	// Attribute delegates for widget update
+	// TODO:: Make a MainUI to which all effects, abilities are added
+	// TODO:: Make a base widget for scalable attribute which has a current and max
 	FDelegateHandle HealthChangedDelegateHandle;
 	void HealthChanged(const FOnAttributeChangeData & Data);
 
@@ -58,5 +48,27 @@ protected:
 
 	FDelegateHandle StaminaMaxChangedDelegateHandle;
 	void StaminaMaxChanged(const FOnAttributeChangeData & Data);
+
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Abilities|Input")
+	UAbilitiesInputComponent* AbilitiesInputComponent;
+	
+	// Widget related
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "UI")
+	TSubclassOf<UMainAttributesWidget> MainAttributesWidgetClass;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "UI")
+	UMainAttributesWidget* MainAttributesWidget;
+		
+	//========================================================
+
+	// Ability system
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
+	UAbilitySystemComponent* AbilitySystemComponent;
+
+	void InitAbilitySystemComponentRelated();
+	void InitDefaultEffects();
+	
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Abilities")
+	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;
 
 };

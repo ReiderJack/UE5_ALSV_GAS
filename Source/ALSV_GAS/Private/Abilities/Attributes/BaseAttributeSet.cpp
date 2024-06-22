@@ -36,6 +36,12 @@ void UBaseAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 		float healthMax = GetHealthMax();
 		NewValue = FMath::Clamp(NewValue, 0.f, healthMax);
 	}
+
+	if(Attribute == GetStaminaAttribute())
+	{
+		float staminaMax = GetStaminaMax();
+		NewValue = FMath::Clamp(NewValue, 0.f, staminaMax);
+	}
 }
 
 void UBaseAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
