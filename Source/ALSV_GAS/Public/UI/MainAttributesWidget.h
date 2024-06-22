@@ -19,4 +19,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void OnHealthMaxChanged(float NewHealthMax);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void OnStaminaChanged(float NewStamina);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void OnStaminaMaxChanged(float HewStaminaMax);
 };

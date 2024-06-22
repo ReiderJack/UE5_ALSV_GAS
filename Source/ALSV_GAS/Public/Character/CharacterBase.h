@@ -53,4 +53,10 @@ protected:
 	FDelegateHandle HealthMaxChangedDelegateHandle;
 	void HealthMaxChanged(const FOnAttributeChangeData & Data);
 
+	FDelegateHandle StaminaChangedDelegateHandle;
+	void StaminaChanged(const FOnAttributeChangeData & Data);
+
+	FDelegateHandle StaminaMaxChangedDelegateHandle;
+	void StaminaMaxChanged(const FOnAttributeChangeData & Data);
+
 };

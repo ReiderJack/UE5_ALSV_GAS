@@ -41,15 +41,25 @@ void ACharacterBase::BeginPlay()
 	{
 		// instruct the Ability System Component to instantiate the Attribute Set, which will then register it automatically
 		BaseAttributeSet = AbilitySystemComponent->GetSet<UBaseAttributeSet>();
+		
+		// Health
 		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetHealthAttribute()).AddUObject(this, &ACharacterBase::HealthChanged);
 		HealthMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetHealthMaxAttribute()).AddUObject(this, &ACharacterBase::HealthMaxChanged);
 
+		// Stamina
+		StaminaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetStaminaAttribute()).AddUObject(this, &ACharacterBase::StaminaChanged);
+		StaminaMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetStaminaMaxAttribute()).AddUObject(this, &ACharacterBase::StaminaMaxChanged);
+		
 		if (auto const controller = Cast<APlayerController>(GetController()))
 		{
 			MainAttributesWidget = CreateWidget<UMainAttributesWidget>(controller, MainAttributesWidgetClass);
 			MainAttributesWidget->AddToViewport();
+			// Health
 			MainAttributesWidget->OnHealthMaxChanged(BaseAttributeSet->GetHealthMax());
 			MainAttributesWidget->OnHealthChanged(BaseAttributeSet->GetHealth());
+			// Stamina
+			MainAttributesWidget->OnStaminaMaxChanged(BaseAttributeSet->GetStaminaMax());
+			MainAttributesWidget->OnStaminaChanged(BaseAttributeSet->GetStamina());
 		}
 
 	}
@@ -68,6 +78,22 @@ void ACharacterBase::HealthMaxChanged(const FOnAttributeChangeData& Data)
 	if (MainAttributesWidget)
 	{
 		MainAttributesWidget->OnHealthMaxChanged(Data.NewValue);
+	}
+}
+
+void ACharacterBase::StaminaChanged(const FOnAttributeChangeData& Data)
+{
+	if (MainAttributesWidget)
+	{
+		MainAttributesWidget->OnStaminaChanged(Data.NewValue);
+	}
+}
+
+void ACharacterBase::StaminaMaxChanged(const FOnAttributeChangeData& Data)
+{
+	if (MainAttributesWidget)
+	{
+		MainAttributesWidget->OnStaminaMaxChanged(Data.NewValue);
 	}
 }
 
