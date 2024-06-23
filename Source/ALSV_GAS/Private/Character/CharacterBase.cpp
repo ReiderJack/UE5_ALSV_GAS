@@ -80,25 +80,28 @@ void ACharacterBase::InitAbilitySystemComponentRelated()
 	if (!AbilitySystemComponent) return;
 	// instruct the Ability System Component to instantiate the Attribute Set, which will then register it automatically
 	BaseAttributeSet = AbilitySystemComponent->GetSet<UBaseAttributeSet>();
-	
-	// Health
-	HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetHealthAttribute()).AddUObject(this, &ACharacterBase::HealthChanged);
-	HealthMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetHealthMaxAttribute()).AddUObject(this, &ACharacterBase::HealthMaxChanged);
 
-	// Stamina
-	StaminaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetStaminaAttribute()).AddUObject(this, &ACharacterBase::StaminaChanged);
-	StaminaMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetStaminaMaxAttribute()).AddUObject(this, &ACharacterBase::StaminaMaxChanged);
-	
-	if (auto const controller = Cast<APlayerController>(GetController()))
+	if(GetLocalRole() < ROLE_Authority)
 	{
-		MainAttributesWidget = CreateWidget<UMainAttributesWidget>(controller, MainAttributesWidgetClass);
-		MainAttributesWidget->AddToViewport();
 		// Health
-		MainAttributesWidget->OnHealthMaxChanged(BaseAttributeSet->GetHealthMax());
-		MainAttributesWidget->OnHealthChanged(BaseAttributeSet->GetHealth());
+		HealthChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetHealthAttribute()).AddUObject(this, &ACharacterBase::HealthChanged);
+		HealthMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetHealthMaxAttribute()).AddUObject(this, &ACharacterBase::HealthMaxChanged);
+
 		// Stamina
-		MainAttributesWidget->OnStaminaMaxChanged(BaseAttributeSet->GetStaminaMax());
-		MainAttributesWidget->OnStaminaChanged(BaseAttributeSet->GetStamina());
+		StaminaChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetStaminaAttribute()).AddUObject(this, &ACharacterBase::StaminaChanged);
+		StaminaMaxChangedDelegateHandle = AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(BaseAttributeSet->GetStaminaMaxAttribute()).AddUObject(this, &ACharacterBase::StaminaMaxChanged);
+	
+		if (auto const controller = Cast<APlayerController>(GetController()))
+		{
+			MainAttributesWidget = CreateWidget<UMainAttributesWidget>(controller, MainAttributesWidgetClass);
+			MainAttributesWidget->AddToViewport();
+			// Health
+			MainAttributesWidget->OnHealthMaxChanged(BaseAttributeSet->GetHealthMax());
+			MainAttributesWidget->OnHealthChanged(BaseAttributeSet->GetHealth());
+			// Stamina
+			MainAttributesWidget->OnStaminaMaxChanged(BaseAttributeSet->GetStaminaMax());
+			MainAttributesWidget->OnStaminaChanged(BaseAttributeSet->GetStamina());
+		}
 	}
 
 	InitDefaultEffects();

@@ -17,7 +17,7 @@ enum class EAbilityInput : uint8
 	Running = 2,
 	Walking = 3,
 	Sprinting = 4,
-	
+	Jump = 5,
 };
 
 USTRUCT()

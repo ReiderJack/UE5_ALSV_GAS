@@ -1,8 +1,16 @@
-
-
-
 #include "Abilities/Attributes/BaseAttributeSet.h"
 #include "GameplayEffectExtension.h"
+#include "Net/UnrealNetwork.h"
+
+void UBaseAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, Health, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, HealthMax, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, Stamina, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UBaseAttributeSet, StaminaMax, COND_None, REPNOTIFY_Always);
+}
 
 bool UBaseAttributeSet::PreGameplayEffectExecute(FGameplayEffectModCallbackData& Data)
 {
@@ -29,7 +37,6 @@ void UBaseAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallba
 void UBaseAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
 {
 	Super::PreAttributeChange(Attribute, NewValue);
-
 	
 	if(Attribute == GetHealthAttribute())
 	{
@@ -47,4 +54,24 @@ void UBaseAttributeSet::PreAttributeChange(const FGameplayAttribute& Attribute, 
 void UBaseAttributeSet::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
 {
 	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+}
+
+void UBaseAttributeSet::OnRep_Health(const FGameplayAttributeData& OldHealth)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, Health, OldHealth);
+}
+
+void UBaseAttributeSet::OnRep_HealthMax(const FGameplayAttributeData& OldHealthMax)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, HealthMax, OldHealthMax);
+}
+
+void UBaseAttributeSet::OnRep_Stamina(const FGameplayAttributeData& OldStamina)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, Stamina, OldStamina);
+}
+
+void UBaseAttributeSet::OnRep_StaminaMax(const FGameplayAttributeData& OldStaminaMax)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UBaseAttributeSet, StaminaMax, OldStaminaMax);
 }
