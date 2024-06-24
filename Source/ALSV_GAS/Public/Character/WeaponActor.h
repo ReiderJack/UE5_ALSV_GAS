@@ -11,6 +11,7 @@
 #include "Library/ALSCharacterEnumLibrary.h"
 #include "WeaponActor.generated.h"
 
+class UWeaponWidget;
 class ACharacterBase;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnMagazineAmmoDepleted);
@@ -49,46 +50,56 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponActor();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	
 	void InitializeAttributes();
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DamageEffect;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float Damage = 15;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 MaxMagazineAmmo = 20;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	int32 MaxTotalAmmo = 100;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
-	float ShootDistance = 500.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	EFireMode FireMode = EFireMode::SemiAutomatic;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float TimeBetweenShots = 0.5f;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ShootRange = 1000.0f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Weapon")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	bool AutoReloadOnMagazineAmmoDepleted = true;
 
-	UFUNCTION(BlueprintCallable, Category="Weapon")
+	UFUNCTION(BlueprintCallable)
 	void StartShoot();
 	
-	UFUNCTION(BlueprintCallable, Category="Weapon")
+	void OnWeaponUpdate();
+
+	UFUNCTION(BlueprintCallable)
 	void Shoot();
 
-	UFUNCTION(BlueprintCallable, Category="Weapon")
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	void Server_Shoot(FVector StartLocation, FRotator ViewRotation);
+
+	UFUNCTION(BlueprintCallable)
 	void StopShoot();
 
-	UFUNCTION(BlueprintCallable, Category="Weapon")
+	UFUNCTION(BlueprintCallable)
 	void Reload();
 
 	FOnMagazineAmmoDepleted OnMagazineAmmoDepleted;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float ShootRange = 1000.0f;
-
+	FName WeaponName = "Gun";
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FName WeaponHolsterSocket = "pistol_holster_socket";
 
@@ -118,21 +129,38 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void EquipWeapon();
+	
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	int32 GetCurrentMagazineAmmo() { return CurrentMagazineAmmo; }
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	int32 GetCurrentSpareAmmo() { return CurrentSpareAmmo; }
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
+	UPROPERTY(ReplicatedUsing=OnRep_MagazineAmmo)
 	int32 CurrentMagazineAmmo = 0;
-	
-	UPROPERTY(EditDefaultsOnly, Category="Weapon")
-	int32 CurrentTotalAmmo = 100;
+
+	UFUNCTION()
+	void OnRep_MagazineAmmo(int32 NewMagazineAmmo);
+
+	UPROPERTY(ReplicatedUsing=OnRep_SpareAmmo)
+	int32 CurrentSpareAmmo = 100;
+
+	UFUNCTION()
+	void OnRep_SpareAmmo(int32 NewSpareAmmo);
 	
 	FTimerHandle ShootTimerHandle;
 	bool bIsShooting = false;
 	
 	// Ability system
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = "Abilities")
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly)
 	UAbilitySystemComponent* AbilitySystemComponent;
 	
-	UPROPERTY(BlueprintReadOnly, Replicated, Category = "Abilities")
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	ACharacterBase* WeaponOwner;
+	
+	FHitResult LineTraceShot(FVector StartLocation, FVector EndLocation);
+	
+	UFUNCTION()
+	void TryApplyDamageToHit(FHitResult HitResult);
 };

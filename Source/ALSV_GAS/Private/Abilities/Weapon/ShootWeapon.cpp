@@ -8,7 +8,11 @@ void UShootWeapon::ActivateAbility(const FGameplayAbilitySpecHandle Handle, cons
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
 	WeaponActor = Cast<ACharacterBase>(ActorInfo->OwnerActor)->GetCurrentWeaponActor();
-	if(!WeaponActor) CancelAbility(Handle, ActorInfo, ActivationInfo, false);
+	if(!WeaponActor)
+	{
+		CancelAbility(Handle, ActorInfo, ActivationInfo, false);
+		return;
+	}
 		
 	WeaponActor->PressShoot(true);
 	

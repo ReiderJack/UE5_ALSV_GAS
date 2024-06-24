@@ -3,6 +3,7 @@
 
 #include "Abilities/DamageEffectExecCalculation.h"
 
+#include "BaseGameplayTags.h"
 #include "Abilities/Attributes/BaseAttributeSet.h"
 
 // Attributes for capture from the Source
@@ -43,7 +44,7 @@ void UDamageEffectExecCalculation::Execute_Implementation(
 	float Damage = 0.0f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().DamageDef, EvaluationParameters, Damage);
 
-	Damage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag(FName("Data.Damage")), false, -1.0f), 0.0f);
+	Damage += FMath::Max<float>(Spec.GetSetByCallerMagnitude(TAG_Data_Damage, false, -1.0f), 0.0f);
 
 	OutExecutionOutput.AddOutputModifier(FGameplayModifierEvaluatedData(DamageStatics().DamageProperty, EGameplayModOp::Additive, Damage));
 }

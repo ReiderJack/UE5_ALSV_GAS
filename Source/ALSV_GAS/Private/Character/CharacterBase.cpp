@@ -1,5 +1,5 @@
 #include "Character/CharacterBase.h"
-
+#include "UI/WeaponWidget.h"
 #include "Character/WeaponActor.h"
 #include "Net/UnrealNetwork.h"
 
@@ -21,14 +21,6 @@ ACharacterBase::ACharacterBase(const FObjectInitializer& ObjectInitializer) : Su
 
 	AbilitySystemComponent->SetIsReplicated(true);
 	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Full);
-}
-
-void ACharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(ACharacterBase, MainWeapon);
-	DOREPLIFETIME(ACharacterBase, SecondWeapon);
 }
 
 void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -57,6 +49,19 @@ AWeaponActor* ACharacterBase::GetCurrentWeaponActor()
 	}
 }
 
+void ACharacterBase::UpdateWeaponWidget(AWeaponActor* WeaponActor)
+{
+	if(HasAuthority()) return;
+	
+	if(!WeaponWidget)
+	{
+		WeaponWidget = CreateWidget<UWeaponWidget>(Cast<APlayerController>(GetController()), WeaponWidgetClass);
+		WeaponWidget->AddToViewport();
+	}
+	
+	WeaponWidget->OnWeaponUpdate(WeaponActor);
+}
+
 // Called when the game starts or when spawned
 void ACharacterBase::BeginPlay()
 {
@@ -79,6 +84,14 @@ void ACharacterBase::InitAbilitySystemComponentRelated()
 	BaseAttributeSet = AbilitySystemComponent->GetSet<UBaseAttributeSet>();
 	
 	InitDefaultEffects();
+}
+
+void ACharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACharacterBase, MainWeapon);
+	DOREPLIFETIME(ACharacterBase, SecondWeapon);
 }
 
 void ACharacterBase::InitDefaultEffects()

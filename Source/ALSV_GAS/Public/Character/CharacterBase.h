@@ -14,6 +14,7 @@
 
 enum class EWeaponType : uint8;
 class AWeaponActor;
+class UWeaponWidget;
 
 UCLASS()
 class ALSV_GAS_API ACharacterBase : public AALSCharacter, public IAbilitySystemInterface
@@ -29,8 +30,7 @@ public:
 	ACharacterBase(const FObjectInitializer& ObjectInitializer);
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-
-
+	
 	UPROPERTY(BlueprintReadWrite)
 	EWeaponType CurrentWeaponType;
 	
@@ -46,6 +46,9 @@ public:
 	UPROPERTY()
 	const UBaseAttributeSet* BaseAttributeSet;
 
+	UFUNCTION(BlueprintCallable)
+	void UpdateWeaponWidget(AWeaponActor* WeaponActor);
+	
 protected:
 	
 	virtual void BeginPlay() override;
@@ -75,6 +78,13 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
 	UMainAttributesWidget* MainAttributesWidget;
+	
+	// Widget related
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	TSubclassOf<UWeaponWidget> WeaponWidgetClass;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "UI")
+	UWeaponWidget* WeaponWidget;
 		
 	//========================================================
 

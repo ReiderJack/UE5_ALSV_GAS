@@ -25,6 +25,9 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_Gun_Shoot, "Ability.Gun.Shoot");
 // Ability
 UE_DEFINE_GAMEPLAY_TAG(TAG_Ability_Mobility, "Ability.Mobility.Dash");
 
+// Data
+UE_DEFINE_GAMEPLAY_TAG(TAG_Data_Damage, "Ability.Data.Damage");
+
 // Effect: Damage
 UE_DEFINE_GAMEPLAY_TAG(TAG_Effect_Damage, "Effect.Damage");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Effect_Damage_Gun, "Effect.Damage.Headshot");
