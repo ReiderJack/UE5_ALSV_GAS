@@ -8,11 +8,15 @@
 #include "Abilities/Attributes/BaseAttributeSet.h"
 #include "UI/MainAttributesWidget.h"
 #include "Abilities/AbilitiesInputComponent.h"
+#include "Character/ALSCharacter.h"
 
 #include "CharacterBase.generated.h"
 
+enum class EWeaponType : uint8;
+class AWeaponActor;
+
 UCLASS()
-class ALSV_GAS_API ACharacterBase : public ACharacter, public IAbilitySystemInterface
+class ALSV_GAS_API ACharacterBase : public AALSCharacter, public IAbilitySystemInterface
 {
 public:
 	// IAbilitySystemInterface function
@@ -22,9 +26,22 @@ private:
 	GENERATED_BODY()
 
 public:
-	ACharacterBase();
-	
+	ACharacterBase(const FObjectInitializer& ObjectInitializer);
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+
+
+	UPROPERTY(BlueprintReadWrite)
+	EWeaponType CurrentWeaponType;
+	
+	UPROPERTY(BlueprintReadWrite, Replicated)
+	AWeaponActor* MainWeapon;
+
+	UPROPERTY(BlueprintReadWrite, Replicated)
+	AWeaponActor* SecondWeapon;
+
+	UFUNCTION(BlueprintCallable)
+	AWeaponActor* GetCurrentWeaponActor();
 
 	UPROPERTY()
 	const UBaseAttributeSet* BaseAttributeSet;
@@ -67,6 +84,9 @@ protected:
 
 	void InitAbilitySystemComponentRelated();
 	void InitDefaultEffects();
+	
+	UFUNCTION(Client, Reliable)
+	void InitUI();
 	
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="Abilities")
 	TArray<TSubclassOf<UGameplayEffect>> DefaultEffects;

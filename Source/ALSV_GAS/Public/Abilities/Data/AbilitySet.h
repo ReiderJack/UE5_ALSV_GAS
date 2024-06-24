@@ -18,6 +18,10 @@ enum class EAbilityInput : uint8
 	Walking = 3,
 	Sprinting = 4,
 	Jump = 5,
+	Crouch = 6,
+	ShootWeapon = 7,
+	ReloadWeapon = 8,
+	SwitchWeapon = 9,
 };
 
 USTRUCT()

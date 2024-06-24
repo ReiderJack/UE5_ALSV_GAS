@@ -7,11 +7,14 @@ UE_DEFINE_GAMEPLAY_TAG(TAG_Movement_Sprint, "Ability.Movement.Sprint");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Movement_Walk, "Ability.Movement.Walk");
 UE_DEFINE_GAMEPLAY_TAG(TAG_Movement_Crouch, "Ability.Movement.Crouch");
 
+// Movement cooldown
+UE_DEFINE_GAMEPLAY_TAG(TAG_Cooldown_Movement_Sprint, "Cooldown.Movement.Sprint");
+
 // Switch
 UE_DEFINE_GAMEPLAY_TAG(TAG_SwitchGun, "Ability.SwitchGun");
-UE_DEFINE_GAMEPLAY_TAG(TAG_SwitchGun_Primary, "Ability.SwitchGun.Main");
-UE_DEFINE_GAMEPLAY_TAG(TAG_SwitchGun_Sidearm, "Ability.SwitchGun.Second");
-UE_DEFINE_GAMEPLAY_TAG(TAG_SwitchGun_Equipping, "Ability.SwitchGun.Equipping");
+
+// Switch cooldown
+UE_DEFINE_GAMEPLAY_TAG(TAG_Cooldown_SwitchGun, "Cooldown.SwitchGun");
 
 // Gun
 UE_DEFINE_GAMEPLAY_TAG(TAG_Gun_Aim, "Ability.Gun.Aim");
