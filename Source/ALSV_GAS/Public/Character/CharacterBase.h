@@ -85,6 +85,9 @@ protected:
 	
 	UPROPERTY(BlueprintReadWrite, Category = "UI")
 	UWeaponWidget* WeaponWidget;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void Die();
 		
 	//========================================================
 

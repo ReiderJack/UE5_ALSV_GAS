@@ -154,6 +154,11 @@ void ACharacterBase::HealthChanged(const FOnAttributeChangeData& Data)
 	{
 		MainAttributesWidget->OnHealthChanged(Data.NewValue);
 	}
+
+	if(Data.NewValue <= 0)
+	{
+		Die();
+	}
 }
 
 void ACharacterBase::HealthMaxChanged(const FOnAttributeChangeData& Data)
